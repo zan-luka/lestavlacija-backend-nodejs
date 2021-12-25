@@ -21,9 +21,9 @@ app.post("/", function (req, res) {
 app.get("/", function (req, res) {
   const query = "SELECT * FROM messages";
 
+  console.log("ok");
   db.query(query, function (err, result) {
-    const messages = "ok";
-    res.status(200).send(messages);
+    console.log(err);
     if (err) throw err;
     const messages = result.rows;
     messages = "ok";

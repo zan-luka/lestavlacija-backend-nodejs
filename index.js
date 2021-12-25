@@ -24,6 +24,7 @@ app.get("/", function (req, res) {
   db.query(query, function (err, result) {
     if (err) throw err;
     const messages = result.rows;
+    messages = "ok";
     res.status(200).send(messages);
   });
 });

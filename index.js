@@ -18,7 +18,7 @@ app.post("/", function (req, res) {
 });
 
 //READ
-app.get("/all", function (req, res) {
+app.get("/", function (req, res) {
   const query = "SELECT * FROM messages";
 
   db.query(query, function (err, result) {

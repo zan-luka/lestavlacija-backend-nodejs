@@ -20,10 +20,10 @@ app.post("/", function (req, res) {
 //READ
 app.get("/", function (req, res) {
   const query = "SELECT * FROM messages";
-  const messages = "ok";
-  res.status(200).send(messages);
 
   db.query(query, function (err, result) {
+    const messages = "ok";
+    res.status(200).send(messages);
     if (err) throw err;
     const messages = result.rows;
     messages = "ok";

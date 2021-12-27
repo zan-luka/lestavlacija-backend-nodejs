@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 //CREATE
-app.post("/", function (req, res) {
+app.post("/create", function (req, res) {
   const query = "INSERT INTO messages (text) VALUES ($1)";
   const values = [req.body.text];
 
@@ -18,20 +18,22 @@ app.post("/", function (req, res) {
 });
 
 //READ
-app.get("/", function (req, res) {
+app.get("/restaurants", function (req, res) {
   const query = "SELECT * FROM messages";
 
   console.log("ok");
   db.query(query, function (err, result) {
-    console.log(err);
-    if (err) throw err;
-    const messages = result.rows;
-    messages = "ok";
-    res.status(200).send(messages);
+    try {
+      if (err) throw err;
+      const messages = result.rows;
+      res.status(200).send(messages);
+    } catch (e){
+      console.log(e.toString());
+    }
   });
 });
 
-app.get("/:id", function (req, res) {
+app.get("/kys/:id", function (req, res) {
   const id = parseInt(req.params.id);
   const query = "SELECT * FROM messages WHERE id = $1";
   const values = [id];
@@ -49,7 +51,7 @@ app.get("/:id", function (req, res) {
 });
 
 //UPDATE
-app.put("/:id", function (req, res) {
+app.put("ubise/:id", function (req, res) {
   const id = parseInt(req.params.id);
   const query = "UPDATE messages SET text = $1 WHERE id = $2";
   const values = [req.body.text, id];
@@ -68,7 +70,7 @@ app.put("/:id", function (req, res) {
 });
 
 //DELETE
-app.delete("/:id", function (req, res) {
+app.delete("garbage/:id", function (req, res) {
   const id = parseInt(req.params.id);
   const query = "DELETE FROM messages WHERE id = $1";
   const values = [id];

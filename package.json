@@ -1,5 +1,5 @@
 {
-  "name": "node_express_postgresql_tutorial_p2",
+  "name": "lestavracija-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "Christopher Af Bjur",
+  "author": "ZLN",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",

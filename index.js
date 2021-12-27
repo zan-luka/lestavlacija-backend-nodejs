@@ -158,6 +158,7 @@ app.post("/add/restaurant", function (req, res) {
   
 });
 
+/*
 // delete/restaurant/:id
 app.delete("/delete/restaurant/:id", function (req, res) {
   const id = parseInt(req.params.id);
@@ -177,6 +178,7 @@ app.delete("/delete/restaurant/:id", function (req, res) {
     res.status(200).send(deleted);
   });
 });
+*/
 
 // --------------------------------------------------- USERS ---------------------------------------------------
 
@@ -246,6 +248,7 @@ app.put("/update/user/:id", function (req, res) {
   });
 });
 
+/*
 // delete/user/:id
 app.delete("/delete/user/:id", function (req, res) {
   const id = parseInt(req.params.id);
@@ -265,7 +268,7 @@ app.delete("/delete/user/:id", function (req, res) {
     res.status(200).send(deleted);
   });
 });
-
+*/
 
 // --------------------------------------------------- TABLES ---------------------------------------------------
 
@@ -304,8 +307,8 @@ app.get("/table/:id", function (req, res) {
 
 // add/table
 app.post("/add/table", function (req, res) {
-  const query = "INSERT INTO miza (rid, st_mize, st_stolov) VALUES ($1, $2, $3)";
-  const values = [req.body.rid, req.body.st_mize, req.body.st_stolov];
+  const query = "INSERT INTO miza (st_mize, st_stolov) VALUES ($1, $2)";
+  const values = [req.body.st_mize, req.body.st_stolov];
   console.log(values);
 
   
@@ -373,7 +376,7 @@ app.get("/reservation/:id", function (req, res) {
 
 // add/reservation
 app.post("/add/reservation", function (req, res) {
-  const query = "INSERT INTO rezervacija (datum, status, uid, mid) VALUES ($1, $2, $3, $4)";
+  const query = "INSERT INTO rezervacija (datum, status, uid, mid) VALUES (TO_DATE($1, 'DD.MM.YYYY HH:MI'), $2, $3, $4)";
   const values = [req.body.datum, req.body.status, req.body.uid, req.body.mid];
   console.log(values);
 
@@ -421,6 +424,62 @@ app.delete("/delete/reservation/:id", function (req, res) {
         .send({ msg: `No message with id ${values[0]} found!` });
 
     res.status(200).send(deleted);
+  });
+});
+
+// --------------------------------------------------- POVEZANE ---------------------------------------------------
+
+// /user/reservations/:id
+app.get("/user/reservations/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "SELECT TO_TIMESTAMP(r.datum, 'DD.MM.YYYY HH:MI') as datum, r.status as status, m.st_mize as st_mize, re.naziv as restavracija, re.naslov as naslov FROM rezervacija r INNER JOIN uporabnik u ON u.uid = r.uid INNER JOIN miza m ON m.mid = r.mid  INNER JOIN restavracija re ON re.rid = m.rid WHERE r.uid = $1";
+  const values = [id];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const found = result.rows;
+
+    if (found.length > 0) {
+      res.status(200).send(found);
+    } else {
+      res.status(404).send({ msg: `No message with id ${id} found!` });
+    }
+  });
+});
+
+// /restaurant/tables/:id
+app.get("/restaurant/tables/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "SELECT m.st_mize as n_table, m.st_stolov as n_chairs FROM miza m INNER JOIN restavracija r ON r.rid = m.rid WHERE m.rid = $1";
+  const values = [id];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const found = result.rows;
+
+    if (found.length > 0) {
+      res.status(200).send(found);
+    } else {
+      res.status(404).send({ msg: `No message with id ${id} found!` });
+    }
+  });
+});
+
+// /restaurant/reservations/:id
+app.get("/restaurant/reservations/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "SELECT m.st_mize as n_table, m.st_stolov as n_chairs, TO_TIMESTAMP(rez.datum, 'DD.MM.YYYY HH:MI') as datum FROM miza m INNER JOIN restavracija r ON r.rid = m.rid INNER JOIN rezervacija rez ON m.mid = rez.mid WHERE m.rid = $1 AND rez.status = 'rezervirano'";
+  const values = [id];
+  
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const found = result.rows;
+
+    if (found.length > 0) {
+      res.status(200).send(found);
+    } else {
+      res.status(404).send({ msg: `No message with id ${id} found!` });
+    }
   });
 });
 

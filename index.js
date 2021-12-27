@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
+// ------------------------------------------- TESTING ROUTER -----------------------------------------------
 //CREATE
 app.post("/create", function (req, res) {
   const query = "INSERT INTO messages (text) VALUES ($1)";
@@ -18,7 +18,7 @@ app.post("/create", function (req, res) {
 });
 
 //READ
-app.get("/restaurants", function (req, res) {
+app.get("/test", function (req, res) {
   const query = "SELECT * FROM messages";
 
   console.log("ok");
@@ -85,6 +85,54 @@ app.delete("garbage/:id", function (req, res) {
         .send({ msg: `No message with id ${values[0]} found!` });
 
     res.status(200).send(deleted);
+  });
+});
+
+// --------------------------------------------------- DEJANSKI ROUTER -----------------------------------------------
+// --------------------------------------------------- RESTAURANTS ---------------------------------------------------
+
+// /restaurants
+app.get("/restaurants", function (req, res) {
+  const query = "SELECT * FROM restavracija";
+
+  db.query(query, function (err, result) {
+    try {
+      if (err) throw err;
+      const messages = result.rows;
+      res.status(200).send(messages);
+    } catch (e){
+      console.log(e.toString());
+    }
+  });
+});
+
+// /restaurant/:id
+app.get("/restaurant/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "SELECT * FROM restavracija WHERE rid = $1";
+  const values = [id];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const found = result.rows;
+
+    if (found.length > 0) {
+      res.status(200).send(found);
+    } else {
+      res.status(404).send({ msg: `No message with id ${id} found!` });
+    }
+  });
+});
+
+// add/restaurant
+app.post("/add/restaurant", function (req, res) {
+  const query = "INSERT INTO restavracija (naziv, naslov, telefon) VALUES ($1, $2, $3)";
+  const values = [req.body.text];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const message = { id: result.insertId, text: values[0] };
+    res.status(200).send(message);
   });
 });
 

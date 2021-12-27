@@ -8,6 +8,9 @@ REST API with Node.js, Express & PostgreSQL
 // POST
 /add/restaurant --> add restaurant
 
+// DELETE
+/delete/restaurant/:id --> delete restaurant
+
 
 ------------ USERS ----------------------
 // GET

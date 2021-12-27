@@ -25,3 +25,11 @@ REST API with Node.js, Express & PostgreSQL
 
 // DELETE
 /delete/user/:id --> delete user
+
+------------ TABLES ----------------------
+// GET
+/tables --> all tables
+/table/:id --> specific table
+
+// POST
+/add/table --> add table

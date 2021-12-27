@@ -265,4 +265,56 @@ app.delete("/delete/user/:id", function (req, res) {
     res.status(200).send(deleted);
   });
 });
+
+
+// --------------------------------------------------- TABLES ---------------------------------------------------
+
+// /tables
+app.get("/tables", function (req, res) {
+  const query = "SELECT * FROM miza";
+
+  db.query(query, function (err, result) {
+    try {
+      if (err) throw err;
+      const messages = result.rows;
+      res.status(200).send(messages);
+    } catch (e){
+      console.log(e.toString());
+    }
+  });
+});
+
+// /table/:id
+app.get("/table/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "SELECT * FROM miza WHERE mid = $1";
+  const values = [id];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const found = result.rows;
+
+    if (found.length > 0) {
+      res.status(200).send(found);
+    } else {
+      res.status(404).send({ msg: `No message with id ${id} found!` });
+    }
+  });
+});
+
+// add/table
+app.post("/add/table", function (req, res) {
+  const query = "INSERT INTO miza (rid, st_mize, st_stolov) VALUES ($1, $2, $3)";
+  const values = [req.body.rid, req.body.st_mize, req.body.st_stolov];
+  console.log(values);
+
+  
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const message = { id: result.insertId, text: values[0] };
+    res.status(200).send(message);
+  });
+  
+});
+
 app.listen(port, () => console.log(`Running server on port ${port}`));

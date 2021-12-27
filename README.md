@@ -1,6 +1,7 @@
 REST API with Node.js, Express & PostgreSQL
 
 ------------ RESTAURANTS ----------------------
+
 // GET
 /restaurants --> all restaurants
 /restaurant/:id --> specific restaurant
@@ -13,6 +14,7 @@ REST API with Node.js, Express & PostgreSQL
 
 
 ------------ USERS ----------------------
+
 // GET
 /users --> all users ???
 /user/:id --> specific user
@@ -27,9 +29,29 @@ REST API with Node.js, Express & PostgreSQL
 /delete/user/:id --> delete user
 
 ------------ TABLES ----------------------
+
 // GET
 /tables --> all tables
 /table/:id --> specific table
 
 // POST
 /add/table --> add table
+
+// DELETE
+/delete/table/:id --> delete table
+
+------------ RESERVATION ----------------------
+
+// GET
+/reservations --> all reservations
+
+/reservation/:id --> specific reservation
+
+// POST
+/add/reservation --> add reservation
+
+// PUT
+/update/reservation/:id --> update reservation
+
+// DELETE
+/delete/reservation/:id --> delete reservation

@@ -317,4 +317,111 @@ app.post("/add/table", function (req, res) {
   
 });
 
+// delete/table/:id
+app.delete("/delete/table/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "DELETE FROM miza WHERE mid = $1";
+  const values = [id];
+  console.log(values);
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const deleted = [{ id: values[0] }];
+
+    if (result.rowCount === 0)
+      return res
+        .status(404)
+        .send({ msg: `No message with id ${values[0]} found!` });
+
+    res.status(200).send(deleted);
+  });
+});
+
+// --------------------------------------------------- RESERVATION ---------------------------------------------------
+// /reservations
+app.get("/reservations", function (req, res) {
+  const query = "SELECT * FROM rezervacija";
+
+  db.query(query, function (err, result) {
+    try {
+      if (err) throw err;
+      const messages = result.rows;
+      res.status(200).send(messages);
+    } catch (e){
+      console.log(e.toString());
+    }
+  });
+});
+
+// /reservation/:id
+app.get("/reservation/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "SELECT * FROM rezervacija WHERE uid = $1";
+  const values = [id];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const found = result.rows;
+
+    if (found.length > 0) {
+      res.status(200).send(found);
+    } else {
+      res.status(404).send({ msg: `No message with id ${id} found!` });
+    }
+  });
+});
+
+// add/reservation
+app.post("/add/reservation", function (req, res) {
+  const query = "INSERT INTO rezervacija (datum, status, uid, mid) VALUES ($1, $2, $3, $4)";
+  const values = [req.body.datum, req.body.status, req.body.uid, req.body.mid];
+  console.log(values);
+
+  
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const message = { id: result.insertId, text: values[0] };
+    res.status(200).send(message);
+  });
+});
+
+// /update/reservation/:id
+app.put("/update/reservation/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "UPDATE rezervacija SET status = $1 WHERE uid = $2";
+  const values = [req.body.status, id];
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const updated = [{ id: values[1], message: values[0] }];
+
+    if (result.rowCount === 0)
+      return res
+        .status(404)
+        .send({ msg: `No message with id ${values[1]} found!` });
+
+    res.status(200).send(updated);
+  });
+});
+
+// delete/reservation/:id
+app.delete("/delete/reservation/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+  const query = "DELETE FROM rezervacija WHERE uid = $1";
+  const values = [id];
+  console.log(values);
+
+  db.query(query, values, function (err, result) {
+    if (err) throw err;
+    const deleted = [{ id: values[0] }];
+
+    if (result.rowCount === 0)
+      return res
+        .status(404)
+        .send({ msg: `No message with id ${values[0]} found!` });
+
+    res.status(200).send(deleted);
+  });
+});
+
 app.listen(port, () => console.log(`Running server on port ${port}`));
